@@ -5,6 +5,8 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
 import unittest
 from contact import Contact
+from os import getcwd
+from os import path
 
 
 class TestAddUser(unittest.TestCase):
@@ -17,7 +19,7 @@ class TestAddUser(unittest.TestCase):
         self.open_home_page(wd)
         self.login(wd, username="admin", password="secret")
         self.create_contact(wd, Contact(firstname="Tester", middlename="Something", lastname="Trump",
-                                        photo="C:\\picture.jpg", nickname="super nickname", title="QA engineer",
+                                        photo="picture.jpg", nickname="super nickname", title="QA engineer",
                                         company="Google", address="Kremlin", home_phone="1111111",
                                         mobile_phone="2222222", work_phone="3333333", fax="4444444",
                                         email="test@test.com", email_2="test2@test.com", email_3="test3@test.com",
@@ -40,7 +42,7 @@ class TestAddUser(unittest.TestCase):
         wd.find_element_by_name("nickname").click()
         wd.find_element_by_name("nickname").clear()
         wd.find_element_by_name("nickname").send_keys(contact.nickname)
-        wd.find_element_by_name("photo").send_keys(contact.photo)
+        wd.find_element_by_name("photo").send_keys(path.join(getcwd(), "") + contact.photo)
         wd.find_element_by_name("title").click()
         wd.find_element_by_name("title").clear()
         wd.find_element_by_name("title").send_keys(contact.title)
