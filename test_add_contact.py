@@ -15,7 +15,7 @@ class TestAddUser(unittest.TestCase):
     def test_add_user(self):
         wd = self.wd
         self.open_home_page(wd)
-        self.login(wd)
+        self.login(wd, username="admin", password="secret")
         self.create_contact(wd, Contact(firstname="Tester", middlename="Something", lastname="Trump",
                                         photo="C:\\picture.jpg", nickname="super nickname", title="QA engineer",
                                         company="Google", address="Kremlin", home_phone="1111111",
@@ -110,7 +110,7 @@ class TestAddUser(unittest.TestCase):
     def logout(self, wd):
         wd.find_element_by_link_text("Logout").click()
 
-    def login(self, wd, username="admin", password="secret"):
+    def login(self, wd, username, password):
         wd.find_element_by_name("user").click()
         wd.find_element_by_name("user").clear()
         wd.find_element_by_name("user").send_keys(username)
