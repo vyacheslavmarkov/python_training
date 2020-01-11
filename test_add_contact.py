@@ -13,14 +13,12 @@ class TestAddUser(unittest.TestCase):
 
     def test_add_user(self):
         wd = self.wd
-        wd.get("http://localhost/addressbook/")
-        wd.find_element_by_name("user").click()
-        wd.find_element_by_name("user").clear()
-        wd.find_element_by_name("user").send_keys("admin")
-        wd.find_element_by_name("pass").click()
-        wd.find_element_by_name("pass").clear()
-        wd.find_element_by_name("pass").send_keys("secret")
-        wd.find_element_by_xpath("//input[@value='Login']").click()
+        self.open_home_page(wd)
+        self.login(wd)
+        self.create_contact(wd)
+        self.logout(wd)
+
+    def create_contact(self, wd):
         wd.find_element_by_link_text("add new").click()
         wd.find_element_by_name("firstname").click()
         wd.find_element_by_name("firstname").clear()
@@ -70,19 +68,23 @@ class TestAddUser(unittest.TestCase):
         wd.find_element_by_name("email3").click()
         wd.find_element_by_name("bday").click()
         Select(wd.find_element_by_name("bday")).select_by_visible_text("29")
-        wd.find_element_by_xpath("(.//*[normalize-space(text()) and normalize-space(.)='Birthday:'])[1]/following::option[31]").click()
+        wd.find_element_by_xpath(
+            "(.//*[normalize-space(text()) and normalize-space(.)='Birthday:'])[1]/following::option[31]").click()
         wd.find_element_by_name("bmonth").click()
         Select(wd.find_element_by_name("bmonth")).select_by_visible_text("April")
-        wd.find_element_by_xpath("(.//*[normalize-space(text()) and normalize-space(.)='Birthday:'])[1]/following::option[38]").click()
+        wd.find_element_by_xpath(
+            "(.//*[normalize-space(text()) and normalize-space(.)='Birthday:'])[1]/following::option[38]").click()
         wd.find_element_by_name("byear").click()
         wd.find_element_by_name("byear").clear()
         wd.find_element_by_name("byear").send_keys("1991")
         wd.find_element_by_name("aday").click()
         Select(wd.find_element_by_name("aday")).select_by_visible_text("22")
-        wd.find_element_by_xpath("(.//*[normalize-space(text()) and normalize-space(.)='Anniversary:'])[1]/following::option[24]").click()
+        wd.find_element_by_xpath(
+            "(.//*[normalize-space(text()) and normalize-space(.)='Anniversary:'])[1]/following::option[24]").click()
         wd.find_element_by_name("amonth").click()
         Select(wd.find_element_by_name("amonth")).select_by_visible_text("August")
-        wd.find_element_by_xpath("(.//*[normalize-space(text()) and normalize-space(.)='Anniversary:'])[1]/following::option[42]").click()
+        wd.find_element_by_xpath(
+            "(.//*[normalize-space(text()) and normalize-space(.)='Anniversary:'])[1]/following::option[42]").click()
         wd.find_element_by_name("ayear").click()
         wd.find_element_by_name("ayear").clear()
         wd.find_element_by_name("ayear").send_keys("2015")
@@ -96,9 +98,22 @@ class TestAddUser(unittest.TestCase):
         wd.find_element_by_name("notes").clear()
         wd.find_element_by_name("notes").send_keys("nothing")
         wd.find_element_by_xpath("(//input[@name='submit'])[2]").click()
-        wd.find_element_by_link_text("home page").click()
+
+    def logout(self, wd):
         wd.find_element_by_link_text("Logout").click()
-    
+
+    def login(self, wd):
+        wd.find_element_by_name("user").click()
+        wd.find_element_by_name("user").clear()
+        wd.find_element_by_name("user").send_keys("admin")
+        wd.find_element_by_name("pass").click()
+        wd.find_element_by_name("pass").clear()
+        wd.find_element_by_name("pass").send_keys("secret")
+        wd.find_element_by_xpath("//input[@value='Login']").click()
+
+    def open_home_page(self, wd):
+        wd.get("http://localhost/addressbook/")
+
     def is_element_present(self, how, what):
         try: self.wd.find_element(by=how, value=what)
         except NoSuchElementException as e: return False
