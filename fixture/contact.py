@@ -1,6 +1,6 @@
-from os import getcwd
 from os import path
 from selenium.webdriver.support.select import Select
+from global_vars import root_path
 
 
 class ContactHelper:
@@ -23,7 +23,7 @@ class ContactHelper:
         wd.find_element_by_name("nickname").click()
         wd.find_element_by_name("nickname").clear()
         wd.find_element_by_name("nickname").send_keys(contact.nickname)
-        wd.find_element_by_name("photo").send_keys(path.join(getcwd(), "") + contact.photo)
+        wd.find_element_by_name("photo").send_keys(path.join(root_path, "") + contact.photo)
         wd.find_element_by_name("title").click()
         wd.find_element_by_name("title").clear()
         wd.find_element_by_name("title").send_keys(contact.title)
