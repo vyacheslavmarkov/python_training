@@ -111,7 +111,9 @@ class ContactHelper:
 
     def open_contacts_page(self):
         wd = self.app.wd
-        wd.find_element_by_link_text("home").click()
+        # index.php always presents the list of contacts and nothing more, so no additional checks are needed
+        if not wd.current_url.endswith("/index.php"):
+            wd.find_element_by_link_text("home").click()
 
     def count(self):
         wd = self.app.wd
