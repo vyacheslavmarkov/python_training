@@ -135,13 +135,11 @@ class ContactHelper:
                 firstname = attributes[2].text
                 id = element.find_element_by_name("selected[]").get_attribute("value")
                 address = attributes[3].text
-                all_emails = attributes[4].text.splitlines()
-                all_phones = attributes[5].text.splitlines()
-                self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, id=id,
-                                                  homephone=all_phones[0], mobilephone=all_phones[1],
-                                                  workphone=all_phones[2], secondaryphone=all_phones[3],
-                                                  address=address, email=all_emails[0], email2=all_emails[1],
-                                                  email3=all_emails[2]))
+                all_emails = attributes[4].text
+                all_phones = attributes[5].text
+                self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, address=address, id=id,
+                                                  all_phones_from_homepage=all_phones,
+                                                  all_emails_from_homepage=all_emails))
         return self.contact_cache
 
     def open_contact_to_edit_by_index(self, index):
@@ -187,12 +185,24 @@ class ContactHelper:
         return Contact(homephone=homephone, workphone=workphone,
                        mobilephone=mobilephone, secondaryphone=secondaryphone)
 
+    def merge_phones_like_on_homepage(self, contact):
+        return "\n".join(filter(lambda x: x != "",
+                                map(lambda x: self.clear(x),
+                                    filter(lambda x: x is not None,
+                                           [contact.homephone, contact.mobilephone, contact.workphone, contact.secondaryphone]))))
+
+    def merge_emails_like_on_homepage(self, contact):
+        return "\n".join(filter(lambda x: x != "",
+                                map(lambda x: self.truncate_whitespaces(x),
+                                    filter(lambda x: x is not None,
+                                           [contact.email, contact.email_2, contact.email_3]))))
+
     def clear(self, s):
-        return re.sub("[() -]", "", s)
+        return self.truncate_whitespaces(re.sub("[() -]", "", s))
 
     def truncate_whitespaces(self, s):
         # remove extra whitespaces sequences in the middle of the string
         cleared_str = re.sub("\s+", " ", s)
         # cut whitespace in the end of string
-        cleared_str = cleared_str.rstrip()
+        cleared_str = cleared_str.strip()
         return cleared_str
