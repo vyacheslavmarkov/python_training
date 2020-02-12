@@ -9,10 +9,7 @@ def test_contact_on_home_page(app):
     assert contact_from_home_page.firstname == contact_from_edit_page.firstname
     assert contact_from_home_page.lastname == contact_from_edit_page.lastname
     assert contact_from_home_page.address == contact_from_edit_page.address
-    assert contact_from_home_page.homephone == app.contact.clear(contact_from_edit_page.homephone)
-    assert contact_from_home_page.workphone == app.contact.clear(contact_from_edit_page.workphone)
-    assert contact_from_home_page.mobilephone == app.contact.clear(contact_from_edit_page.mobilephone)
-    assert contact_from_home_page.secondaryphone == app.contact.clear(contact_from_edit_page.secondaryphone)
-    assert contact_from_home_page.email == contact_from_edit_page.email
-    assert contact_from_home_page.email_2 == contact_from_edit_page.email_2
-    assert contact_from_home_page.email_3 == contact_from_edit_page.email_3
+    assert contact_from_home_page.all_phones_from_homepage == \
+           app.contact.merge_phones_like_on_homepage(contact_from_edit_page)
+    assert contact_from_home_page.all_emails_from_homepage == \
+           app.contact.merge_emails_like_on_homepage(contact_from_edit_page)
