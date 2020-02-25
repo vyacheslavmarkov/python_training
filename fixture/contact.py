@@ -202,6 +202,13 @@ class ContactHelper:
         return Contact(homephone=homephone, workphone=workphone,
                        mobilephone=mobilephone, secondaryphone=secondaryphone)
 
+    def add_contact_to_group(self, index, group_id):
+        wd = self.app.wd
+        self.app.open_home_page()
+        wd.find_elements_by_name("selected[]")[index].click()
+        wd.find_element_by_name("to_group").send_keys(group_id)
+        wd.find_element_by_name("add").click()
+
     def merge_phones_like_on_homepage(self, contact):
         return "\n".join(filter(lambda x: x != "",
                                 map(lambda x: self.clear(x),

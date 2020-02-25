@@ -56,6 +56,12 @@ class GroupHelper:
         wd = self.app.wd
         wd.find_element_by_css_selector("input[value='%s']" % id).click()
 
+    def get_available_groups(self):
+        wd = self.app.wd
+        self.app.open_home_page()
+        groups = wd.find_elements_by_xpath("//select[@name='to_group']/option")
+        return [group.get_attribute("value") for group in groups]
+
     """This is from the home task"""
     def edit_first_group(self, group):
         wd = self.app.wd
