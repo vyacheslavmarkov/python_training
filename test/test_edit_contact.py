@@ -1,9 +1,9 @@
 from model.contact import Contact
-from random import randrange
+import random
 
 
-def test_edit_first_contact(app):
-    if app.contact.count() == 0:
+def test_edit_first_contact(app, db, check_ui):
+    if len(db.get_contact_list()) == 0:
         app.contact.create(Contact(firstname="Tester", middlename="Something", lastname="Trump",
                                    photo="picture.jpg", nickname="super nickname", title="QA engineer",
                                    company="Google", address="Kremlin", homephone="1111111",
@@ -12,8 +12,12 @@ def test_edit_first_contact(app):
                                    homepage="google.com", bday="29", bmonth="April", byear="1991", aday="22",
                                    amonth="August", ayear="2015", address_2="Moscow", secondaryphone="5555555",
                                    notes="Cool guy"))
-    old_contacts = app.contact.get_contacts_list()
-    index = randrange(len(old_contacts))
+    old_contacts = db.get_contact_list()
+    # id of the contact
+    contact = random.choice(old_contacts)
+    id = contact.id
+    # index of the contact in the list of contacts
+    index = old_contacts.index(contact)
     contact = Contact(firstname="New", middlename="Something new", lastname="Obama",
                       photo="picture2.jpg", nickname="new nickname", title="SDET",
                       company="Yandex", address="Washington", homephone="2222222",
@@ -22,10 +26,16 @@ def test_edit_first_contact(app):
                       homepage="yandex.ru", bday="15", bmonth="May", byear="1982", aday="13",
                       amonth="September", ayear="1999", address_2="Samara", secondaryphone="7777777",
                       notes="New note")
-    contact.id = old_contacts[index].id
-    app.contact.edit_contact_by_index(index, contact)
-    assert len(old_contacts) == app.contact.count()
-    new_contacts = app.contact.get_contacts_list()
+    app.contact.edit_contact_by_id(id, contact)
+    new_contacts = db.get_contact_list()
+    assert len(old_contacts) == len(new_contacts)
+    # fill these fields like in db for future comparison
+    contact.all_phones_from_homepage = contact.homephone + contact.mobilephone + contact.workphone + \
+                                       contact.secondaryphone
+    contact.all_emails_from_homepage = contact.email + contact.email_2 + contact.email_3
     old_contacts[index] = contact
     assert sorted(old_contacts, key=Contact.id_or_max) == sorted(new_contacts, key=Contact.id_or_max)
+    if check_ui:
+        old_contacts = app.contact.make_contacts_like_on_homepage(old_contacts)
+        assert sorted(old_contacts, key=Contact.id_or_max) == sorted(app.contact.get_contacts_list(), key=Contact.id_or_max)
 

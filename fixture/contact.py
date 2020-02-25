@@ -29,6 +29,15 @@ class ContactHelper:
         wd.find_element_by_css_selector("div.msgbox")
         self.contact_cache = None
 
+    def delete_contact_by_id(self, id):
+        wd = self.app.wd
+        self.open_contacts_page()
+        wd.find_element_by_id(id).click()
+        wd.find_element_by_xpath("//input[@value='Delete']").click()
+        wd.switch_to.alert.accept()
+        wd.find_element_by_css_selector("div.msgbox")
+        self.contact_cache = None
+
     def edit_first_contact(self, contact):
         self.edit_contact_by_index(0, contact)
 
@@ -36,6 +45,14 @@ class ContactHelper:
         wd = self.app.wd
         self.open_contacts_page()
         wd.find_elements_by_xpath("//img[@title='Edit']")[index].click()
+        self.fill_contact_form(contact)
+        wd.find_element_by_name("update").click()
+        self.contact_cache = None
+
+    def edit_contact_by_id(self, id, contact):
+        wd = self.app.wd
+        self.open_contacts_page()
+        wd.find_element_by_xpath("//tr[@name='entry']//input[@id='%s']/../..//img[@title='Edit']" % str(id)).click()
         self.fill_contact_form(contact)
         wd.find_element_by_name("update").click()
         self.contact_cache = None
@@ -206,3 +223,13 @@ class ContactHelper:
         # cut whitespace in the end of string
         cleared_str = cleared_str.strip()
         return cleared_str
+
+    # convert db data to look like the contact data from the home page
+    def make_contacts_like_on_homepage(self, contacts):
+        for contact in contacts:
+            contact.firstname = self.truncate_whitespaces(contact.firstname)
+            contact.lastname = self.truncate_whitespaces(contact.lastname)
+            contact.address = self.truncate_whitespaces(contact.address)
+            contact.all_phones_from_homepage = self.merge_phones_like_on_homepage(contact)
+            contact.all_emails_from_homepage = self.merge_emails_like_on_homepage(contact)
+        return contacts
