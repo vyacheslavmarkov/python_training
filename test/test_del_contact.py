@@ -3,7 +3,7 @@ import random
 
 
 def test_delete_first_contact(app, db, check_ui):
-    if app.contact.count() == 0:
+    if len(db.get_contact_list) == 0:
         app.contact.create(Contact(firstname="Tester", middlename="Something", lastname="Trump",
                                    photo="picture.jpg", nickname="super nickname", title="QA engineer",
                                    company="Google", address="Kremlin", homephone="1111111",
