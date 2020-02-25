@@ -145,18 +145,7 @@ class ContactHelper:
         if self.contact_cache is None:
             wd = self.app.wd
             self.open_contacts_page()
-            self.contact_cache = []
-            for element in wd.find_elements_by_xpath("//tr[@name='entry']"):
-                attributes = element.find_elements_by_xpath(".//td")
-                lastname = attributes[1].text
-                firstname = attributes[2].text
-                id = element.find_element_by_name("selected[]").get_attribute("value")
-                address = attributes[3].text
-                all_emails = attributes[4].text
-                all_phones = attributes[5].text
-                self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, address=address, id=id,
-                                                  all_phones_from_homepage=all_phones,
-                                                  all_emails_from_homepage=all_emails))
+            self.contact_cache = self.get_contacts_for_contacts_list()
         return self.contact_cache
 
     def open_contact_to_edit_by_index(self, index):
@@ -204,10 +193,40 @@ class ContactHelper:
 
     def add_contact_to_group(self, index, group_id):
         wd = self.app.wd
-        self.app.open_home_page()
+        self.app.contact.open_contacts_page()
         wd.find_elements_by_name("selected[]")[index].click()
-        wd.find_element_by_name("to_group").send_keys(group_id)
+        select = Select(wd.find_element_by_name("to_group"))
+        select.select_by_value(group_id)
         wd.find_element_by_name("add").click()
+
+    def get_contacts_for_the_group(self, group_id):
+        wd = self.app.wd
+        self.open_contacts_page()
+        select = Select(wd.find_element_by_name("group"))
+        select.select_by_value(group_id)
+        return self.get_contacts_for_contacts_list()
+
+    def remove_contact_from_group(self, index):
+        wd = self.app.wd
+        wd.find_elements_by_name("selected[]")[index].click()
+        wd.find_element_by_name("remove").click()
+
+    def get_contacts_for_contacts_list(self):
+        wd = self.app.wd
+        contacts = []
+        for element in wd.find_elements_by_xpath("//tr[@name='entry']"):
+            attributes = element.find_elements_by_xpath(".//td")
+            lastname = attributes[1].text
+            firstname = attributes[2].text
+            id = element.find_element_by_name("selected[]").get_attribute("value")
+            address = attributes[3].text
+            all_emails = attributes[4].text
+            all_phones = attributes[5].text
+            contacts.append(Contact(firstname=firstname, lastname=lastname, address=address, id=id,
+                                             all_phones_from_homepage=all_phones,
+                                             all_emails_from_homepage=all_emails))
+        return contacts
+
 
     def merge_phones_like_on_homepage(self, contact):
         return "\n".join(filter(lambda x: x != "",

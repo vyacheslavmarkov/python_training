@@ -58,7 +58,7 @@ class GroupHelper:
 
     def get_available_groups(self):
         wd = self.app.wd
-        self.app.open_home_page()
+        self.app.contact.open_contacts_page()
         groups = wd.find_elements_by_xpath("//select[@name='to_group']/option")
         return [group.get_attribute("value") for group in groups]
 
