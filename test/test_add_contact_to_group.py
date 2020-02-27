@@ -24,7 +24,7 @@ def test_add_contact_to_group(app, db):
                 # if this group doesn't contain this contact, let's use them for the test
                 if contacts_in_group.count(contact) == 0:
                     contact_to_add = contact
-                    group_to_add = group.id
+                    group_to_add = group
                     break
         else:
             break
@@ -35,12 +35,12 @@ def test_add_contact_to_group(app, db):
         # get the newest contact (with biggest id)
         contacts = db.get_contact_list()
         contact_to_add = sorted(contacts, key=Contact.id_or_max)[len(contacts) - 1]
-        group_to_add = groups[randrange(len(groups))].id
+        group_to_add = groups[randrange(len(groups))]
 
     # add contact to the group
     contact_to_add_index = app.contact.get_contact_index_by_id(contact_to_add.id)
-    app.contact.add_contact_to_group(contact_to_add_index, group_to_add)
+    app.contact.add_contact_to_group(contact_to_add_index, group_to_add.id)
 
     # check that contact is really in the group
-    contacts_in_group = db.get_contacts_in_group(group_to_add)
+    contacts_in_group = db.get_contacts_in_group(group_to_add.id)
     assert contacts_in_group.count(contact_to_add) > 0
