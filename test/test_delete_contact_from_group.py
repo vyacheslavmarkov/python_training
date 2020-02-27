@@ -1,5 +1,4 @@
 from model.group import Group
-from model.contact import Contact
 from random import randrange
 
 
@@ -8,15 +7,8 @@ def test_delete_contact_from_group(app, db):
         app.group.create(Group(name="test"))
 
     if len(db.get_contact_list()) == 0:
-        app.contact.create(Contact(firstname="Tester", middlename="Something", lastname="Trump",
-                                   photo="picture.jpg", nickname="super nickname", title="QA engineer",
-                                   company="Google", address="Kremlin", homephone="1111111",
-                                   mobilephone="2222222", workphone="3333333", fax="4444444",
-                                   email="test@test.com", email2="test2@test.com", email3="test3@test.com",
-                                   homepage="google.com", bday="29", bmonth="April", byear="1991", aday="22",
-                                   amonth="August", ayear="2015", address_2="Moscow", secondaryphone="5555555",
-                                   notes="Cool guy"))
-    # find any group with the contact inside
+        app.contact.create_simple_contact()
+
     group_ids = app.group.get_available_groups()
     group_id = None
     for group in group_ids:

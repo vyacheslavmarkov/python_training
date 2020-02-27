@@ -17,6 +17,16 @@ class ContactHelper:
         wd.find_element_by_xpath("(//input[@name='submit'])[2]").click()
         self.contact_cache = None
 
+    def create_simple_contact(self):
+        self.create(Contact(firstname="Tester", middlename="Something", lastname="Trump",
+                       photo="picture.jpg", nickname="super nickname", title="QA engineer",
+                       company="Google", address="Kremlin", homephone="1111111",
+                       mobilephone="2222222", workphone="3333333", fax="4444444",
+                       email="test@test.com", email2="test2@test.com", email3="test3@test.com",
+                       homepage="google.com", bday="29", bmonth="April", byear="1991", aday="22",
+                       amonth="August", ayear="2015", address_2="Moscow", secondaryphone="5555555",
+                       notes="Cool guy"))
+
     def delete_first_contact(self):
         self.delete_contact_by_index(0)
 
@@ -205,6 +215,13 @@ class ContactHelper:
         select = Select(wd.find_element_by_name("group"))
         select.select_by_value(group_id)
         return self.get_contacts_for_contacts_list()
+
+    # returns contact position on the contacts page by contact id
+    def get_contact_index_by_id(self, contact_id):
+        contacts = self.get_contacts_list()
+        for index, contact in enumerate(contacts):
+            if contact.id == contact_id:
+                return index
 
     def remove_contact_from_group(self, index):
         wd = self.app.wd
